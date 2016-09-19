@@ -29,7 +29,6 @@ namespace MovieRecomendationWebApp.MovieRecomendation.Services
             int[] idsOfSimilarUsers = CosineSimilarity(givenRatings, userRatingRepo);
             for(int i = 0; i < idsOfSimilarUsers.Length; i++)
             {
-                //IEnumerable<int> test = userRatingRepo.GetUsersTopMovies(idsOfSimilarUsers[i], 10).Select(x => x.ItemId);
                 List<UserRating> usersTopMovies = userRatingRepo.GetUsersTopMovies(idsOfSimilarUsers[i], 10);
                 topRatings.AddRange(usersTopMovies);
             }
@@ -71,11 +70,6 @@ namespace MovieRecomendationWebApp.MovieRecomendation.Services
                     similarUsers.Add(new SimilarUser(userRatings.Key, similarity));
                 }
                 
-               // try
-               // {
-               //     similarUsers.Add(dotProduct / (Math.Sqrt(xNormSquare) * Math.Sqrt(yNormSquare)), userRatings.Key);
-               // }
-               // catch (ArgumentException) {  };
 
             }
             IOrderedEnumerable<SimilarUser> orderedSimilarUsers = similarUsers.OrderByDescending(x => x.Similarity);
