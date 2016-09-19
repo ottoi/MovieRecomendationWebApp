@@ -1,0 +1,106 @@
+﻿
+<!--TESTIVAIHEESSA-->
+@section scripts { 
+
+    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.3.min.js"></script>
+    <script src="@Url.Content("~/Scripts/knockout-2.1.0.debug.js")" type="text/javascript"></script>
+    <!--<script src="@Url.Content("~/Scripts/bootstrap.js")" type="text/javascript"></script>-->
+    <script>
+
+            function ViewModel() {
+
+                var self = this;
+
+                function MovieRatingViewModel(movieRating) {
+                    var self = this;
+                    self.Title = movieRating.Title;
+                    self.Id = movieRating.Id;
+                    self.Rating = movieRating.Rating;
+
+                }
+
+                self.movieRatings = ko.observableArray();
+                self.movieRating = ko.observable();
+
+                // Get a list of all products
+                self.getRandomMovies = function () {
+
+                    self.products.removeAll();
+                    $.getJSON("~/api/RecomedationService/GetRandomMovies", function (movieRatings) {
+                        $.each(movieRatings, function (index, movieRating) {
+                            self.products.push(new MovieRatingViewModel(movieRating));
+                        })
+                    });
+                }
+
+                self.updateRating = function (id,rating) {
+                    var newRating = ko.utils.arrayFirst(movieRatings(), function (movieRating) {
+                        return movieRating === rating;
+                    })
+                    newRating.Rating = rating;
+                    ratings.remove(function (item) { return item.Id == id; });
+                    ratings.push(newRating);
+                }
+
+                // Initialize the view-model
+                $.getJSON("api/RecomedationService/GetRandomMovies", function (movieRatings) {
+                    $.each(movieRatings, function (index, movieRating) {
+                        self.movieRatings.push(new MovieRatingViewModel(movieRating));
+                    })
+                });
+            }
+
+
+            var viewModel = new ViewModel();
+            ko.applyBindings(viewModel);
+
+            // Initialize jQuery tab widget
+            //$("#tabs").tabs();
+
+
+
+    </script>
+}
+
+<!--
+<div class="col-md-4">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h2 class="panel-title">Movies</h2>
+        </div>
+        <div class="panel-body", id="movieRatings">
+            <ul class="list-unstyled" data-bind="foreach: movieRatings">
+                <li>
+                    <strong><span data-bind="text: Title"></span></strong>
+                    <small><select data-bind="options:movieRatings, optionsText: 'Rating', value: movieRating.Rating"></select></small>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="alert alert-danger" data-bind="visible: error"><p data-bind="text: error"></p></div>
+</div>
+-->
+
+<head>
+    <title>Product App</title>
+</head>
+<div id="body">
+    <section class="content-wrapper main-content">
+        <h3>Products</h3>
+
+        <table id="movieRatings">
+            <thead>
+                <tr><th>Name</th></tr>
+            </thead>
+            <tbody data-bind="foreach: movieRatings">
+                <tr>
+                    <td data-bind="text: Title"></td>
+                
+                </tr>
+            </tbody>
+        </table>
+
+    </section>
+
+</div>
+   
